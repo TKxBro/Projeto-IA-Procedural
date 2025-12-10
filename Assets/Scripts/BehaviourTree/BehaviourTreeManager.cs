@@ -52,11 +52,9 @@ public class BehaviourTreeManager : MonoBehaviour
     private float baseDetectionRange;
     private bool resourceLocked = false;
 
-    //COISAS NOVAS
     [Header("Detecção de Tiles de Recurso")]
     public TipoDeRecuso tipoTileRecursoProximo = TipoDeRecuso.Nenhum;
     public Tile tileRecursoProximo = null;
-    //COISAS NOVAS
 
     [Header("Componentes")]
     public NavMeshAgent navMeshAgent;
@@ -78,13 +76,13 @@ public class BehaviourTreeManager : MonoBehaviour
     
     [Header("Configs Inventário")]
     public int capacidadeAtual = 0;
-    public TipoDeRecuso tipoRecursoAtual = TipoDeRecuso.Nenhum; //Armazena o tipo de recurso do recurso(arvore,pedra,comida) em que estou a caminho
-    public TipoDeRecuso recursoQueEstouCarregando; //Armazena o tipo de recurso que eu já coletei
+    public TipoDeRecuso tipoRecursoAtual = TipoDeRecuso.Nenhum; 
+    public TipoDeRecuso recursoQueEstouCarregando; 
 
     [Header("Componentes (Tiles/A*)")]
-    public Character tileCharacter;   // referência ao seu script Character (tiles)
-    public Pathfinder pathfinder;     // referência ao Pathfinder do A*
-    public LayerMask groundTileMask;  // máscara dos tiles (mesma ideia do GroundLayerMask)
+    public Character tileCharacter;   
+    public Pathfinder pathfinder;    
+    public LayerMask groundTileMask; 
 
     private Path currentPath;
     private Tile targetTile;
@@ -100,12 +98,11 @@ public class BehaviourTreeManager : MonoBehaviour
         _animator = GetComponent<Animator>();
          baseDetectionRange = detectionRange;
 
-        // ===== Tiles/A* =====
         if (tileCharacter == null)
-            tileCharacter = GetComponent<Character>(); // precisa existir no prefab
+            tileCharacter = GetComponent<Character>(); 
 
         if (pathfinder == null)
-            pathfinder = FindObjectOfType<Pathfinder>(); // ou GameObject.Find("Pathfinder").GetComponent<Pathfinder>();
+            pathfinder = FindObjectOfType<Pathfinder>(); 
 
         if (tileCharacter == null)
             Debug.LogError($"[{name}] Não achei o componente Character (tiles). Adicione ele no NPC.");
@@ -215,7 +212,6 @@ public class BehaviourTreeManager : MonoBehaviour
     if (dist <= arriveRadiusWorld)
         return Status.Sucesso;
 
-    // 1) Sincroniza o tile atual com a posição real
     Tile currentTile = GetTileFromWorld(transform.position);
     if (currentTile == null)
         return Status.Falha;
@@ -233,12 +229,10 @@ public class BehaviourTreeManager : MonoBehaviour
         currentTile.occupyingCharacter = tileCharacter;
     }
 
-    // 2) Destino
     Tile dest = GetTileFromWorld(target.position);
     if (dest == null || dest.Occupied)
         return Status.Falha;
 
-    // 3) Calcula path a partir do tile sincronizado
     if (targetTile != dest || currentPath == null)
     {
         targetTile = dest;
@@ -351,7 +345,6 @@ public class BehaviourTreeManager : MonoBehaviour
     tipoTileRecursoProximo = TipoDeRecuso.Nenhum;
     tileRecursoProximo = null;
 
-    // raio dinâmico: normal ou 1.5x se já “travou” num recurso
     float radius = baseDetectionRange * (resourceLocked ? 1.5f : 1f);
 
     Collider[] tilesPerto = Physics.OverlapSphere(transform.position, radius, groundTileMask);
@@ -381,7 +374,6 @@ public class BehaviourTreeManager : MonoBehaviour
         }
     }
 
-    // se achou recurso, "trava" e aumenta alcance nas próximas chamadas
     resourceLocked = tileRecursoProximo != null;
     return resourceLocked;
 }
@@ -457,7 +449,6 @@ public class BehaviourTreeManager : MonoBehaviour
             }
         }
 
-        // considera ladder também
         if (center.connectedTile != null && !center.connectedTile.Occupied)
         {
             float d = Vector3.Distance(transform.position, center.connectedTile.transform.position);
@@ -469,7 +460,6 @@ public class BehaviourTreeManager : MonoBehaviour
 
     public void PararNoTileAtual() 
     {
-    // Para o NavMesh, caso ainda esteja sendo usado
     if (navMeshAgent != null)
     {
         navMeshAgent.isStopped = true;
@@ -477,13 +467,11 @@ public class BehaviourTreeManager : MonoBehaviour
         navMeshAgent.velocity = Vector3.zero;
     }
 
-    // Para o sistema de tiles/A*
     if (tileCharacter != null)
     {
         tileCharacter.StopMove();
     }
 
-    // Limpa qualquer path/objetivo pendente
     currentPath = null;
     targetTile  = null;
     }
