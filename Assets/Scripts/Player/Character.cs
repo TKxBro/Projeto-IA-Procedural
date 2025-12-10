@@ -18,9 +18,7 @@ public class Character : MonoBehaviour
         FindTileAtStart();
     }
 
-    /// <summary>
-    /// If no starting tile has been manually assigned, we find one beneath us
-    /// </summary>
+
     void FindTileAtStart()
     {
         if (characterTile != null)
@@ -71,7 +69,6 @@ public class Character : MonoBehaviour
 
     public void StartMove(Path _path)
     {
-        // se j� estiver se movendo, interrompe o movimento anterior
         if (moveRoutine != null)
             StopCoroutine(moveRoutine);
 
@@ -109,7 +106,6 @@ public class Character : MonoBehaviour
 
     Moving = false;
 
-    // Garante que o personagem fique encaixado em um tile
     if (characterTile == null)
     {
         if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, 50f, GroundLayerMask))
