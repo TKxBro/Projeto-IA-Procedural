@@ -17,11 +17,6 @@ public class Pathfinder : MonoBehaviour
             illustrator = GetComponent<PathIllustrator>();
     }
 
-    /// <summary>
-    /// Main pathfinding function, marks tiles as being in frontier, while keeping a copy of the frontier
-    /// in "currentFrontier" for later clearing
-    /// </summary>
-    /// <param name="character"></param>
     public Path FindPath(Tile origin, Tile destination)
     {
         List<Tile> openSet = new List<Tile>();
@@ -40,7 +35,6 @@ public class Pathfinder : MonoBehaviour
             openSet.Remove(currentTile);
             closedSet.Add(currentTile);
 
-            //Destination reached
             if (currentTile == destination)
             {  
                 return PathBetween(destination, origin);
@@ -67,11 +61,7 @@ public class Pathfinder : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Returns a list of all neighboring hexagonal tiles and ladders
-    /// </summary>
-    /// <param name="origin"></param>
-    /// <returns></returns>
+
     private List<Tile> NeighborTiles(Tile origin)
     {
         const float HEXAGONAL_OFFSET = 1.75f;
@@ -80,7 +70,6 @@ public class Pathfinder : MonoBehaviour
         float rayLength = 4f;
         float rayHeightOffset = 1f;
 
-        //Rotate a raycast in 60 degree steps and find all adjacent tiles
         for (int i = 0; i < 6; i++)
         {
             direction = Quaternion.Euler(0f, 60f, 0f) * direction;
@@ -97,19 +86,13 @@ public class Pathfinder : MonoBehaviour
             Debug.DrawRay(aboveTilePos, Vector3.down * rayLength, Color.blue);
         }
 
-        //Additionally add connected tiles such as ladders
         if (origin.connectedTile != null)
             tiles.Add(origin.connectedTile);
 
         return tiles;
     }
 
-    /// <summary>
-    /// Called by Interact.cs to create a path between two tiles on the grid 
-    /// </summary>
-    /// <param name="dest"></param>
-    /// <param name="source"></param>
-    /// <returns></returns>
+
     public Path PathBetween(Tile dest, Tile source)
     {
         Path path = MakePath(dest, source);
@@ -117,12 +100,7 @@ public class Pathfinder : MonoBehaviour
         return path;
     }
 
-    /// <summary>
-    /// Creates a path between two tiles
-    /// </summary>
-    /// <param name="destination"></param>
-    /// <param name="origin"></param>
-    /// <returns></returns>
+
     private Path MakePath(Tile destination, Tile origin)
     {
         List<Tile> tiles = new List<Tile>();
