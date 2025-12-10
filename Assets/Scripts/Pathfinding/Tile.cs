@@ -35,13 +35,9 @@ public class Tile : MonoBehaviour
 
     private void Start()
     {
-        // Em vez de for�ar 0, pinta com base no custo atual (procedural ou n�o)
         ApplyTerrainVisual();
     }
 
-    /// <summary>
-    /// Chame isso logo ap�s instanciar para setar custo inicial procedural.
-    /// </summary>
     public void Init(int initialTerrainCost)
     {
         terrainCost = Mathf.Clamp(initialTerrainCost, 0, costMap.Count - 1);
